@@ -64,7 +64,7 @@ export default function ProductivityChart({ completedCount }: ProductivityChartP
               tick={{ fill: '#71717a', opacity: 0.6, fontSize: 11 }}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(124, 58, 237, 0.05)', radius: [10, 10, 10, 10] }}
+              cursor={{ fill: 'rgba(124, 58, 237, 0.05)', radius: 10 }}
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   const data = payload[0].payload;

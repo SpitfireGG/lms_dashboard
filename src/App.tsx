@@ -32,6 +32,7 @@ import AssignmentsView from "./components/AssignmentsView";
 import ProgressView from "./components/ProgressView";
 import MessagesView from "./components/MessagesView";
 import DiscoverView from "./components/DiscoverView";
+import SettingsView from "./components/SettingsView";
 
 // Mock Data & Models
 import {
@@ -837,85 +838,8 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.2 }}
-              className="bg-zinc-900 rounded-2xl p-6 shadow-2xl max-w-xl text-left space-y-6"
             >
-              <div>
-                <h3 className="font-extrabold text-base text-zinc-100">
-                  Platform Preference Controls
-                </h3>
-                <p className="text-xs text-zinc-400 mt-1 font-normal">
-                  Tweak client-side behaviors, system options, and persistence
-                  layers.
-                </p>
-              </div>
-
-              <div className="space-y-4 pt-3 text-xs">
-                <div className="flex justify-between items-center p-4 rounded-xl bg-zinc-950 shadow-inner">
-                  <div>
-                    <p className="font-bold text-zinc-200">
-                      Erase Client Cache
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      Wipes local state variables and re-seeds from mockup
-                      defaults.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Verify: this resets your study logs, course registry and score indexes back to initial stitch mockup values.",
-                        )
-                      ) {
-                        localStorage.clear();
-                        window.location.reload();
-                      }
-                    }}
-                    className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    Reset Storage
-                  </button>
-                </div>
-
-                <div className="flex justify-between items-center p-4 rounded-xl bg-zinc-950 shadow-inner">
-                  <div>
-                    <p className="font-bold text-zinc-200">
-                      Weekly Sandbox Goal
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      Tweak the academic goal parameter in the welcome card.
-                    </p>
-                  </div>
-                  <input
-                    type="number"
-                    min="5"
-                    max="40"
-                    value={metrics.weeklyGoal}
-                    onChange={(e) =>
-                      setMetrics((m) => ({
-                        ...m,
-                        weeklyGoal: +e.target.value || 10,
-                      }))
-                    }
-                    className="w-16 p-2 rounded-lg bg-zinc-900 text-center font-bold text-zinc-100 focus:outline-none focus:ring-1 focus:ring-accent-dark"
-                  />
-                </div>
-
-                <div className="flex justify-between items-center p-4 rounded-xl bg-zinc-950 shadow-inner">
-                  <div>
-                    <p className="font-bold text-zinc-200">
-                      Profile Avatar Model
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      Choose user identity representation in platform header.
-                    </p>
-                  </div>
-                  <select className="p-2 rounded-lg bg-zinc-900 font-semibold text-zinc-350 focus:outline-none focus:ring-1 focus:ring-accent-dark cursor-pointer">
-                    <option>Robert Dorwart (Enterprise)</option>
-                    <option>Alex Mercer (Student)</option>
-                  </select>
-                </div>
-              </div>
+              <SettingsView />
             </motion.div>
           )}
 

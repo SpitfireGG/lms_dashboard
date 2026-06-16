@@ -30,7 +30,6 @@ interface SidebarProps {
 export default function Sidebar({
   activeTab,
   setActiveTab,
-  onAddModuleClick,
   sidebarCollapsed,
   setSidebarCollapsed,
   homeSubTab,
