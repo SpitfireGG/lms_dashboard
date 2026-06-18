@@ -43,4 +43,6 @@ export interface EventItem {
   courseId?: string;
 }
 
-export type ActiveTab = 'home' | 'my-courses' | 'schedule' | 'assignments' | 'progress' | 'messages' | 'discover' | 'settings' | 'info';
+export type ActiveTab = 'home' | 'my-courses' | 'schedule' | 'assignments' | 'progress' | 'messages' | 'discover' | 'settings' | 'info' | 'students';
+
+export type UserRole = 'student' | 'teacher';

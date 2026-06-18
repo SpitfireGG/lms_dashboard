@@ -33,6 +33,12 @@ import ProgressView from "./components/ProgressView";
 import MessagesView from "./components/MessagesView";
 import DiscoverView from "./components/DiscoverView";
 import SettingsView from "./components/SettingsView";
+import InfoView from "./components/InfoView";
+import TeacherHome from "./components/TeacherHome";
+import TeacherMyClasses from "./components/TeacherMyClasses";
+import TeacherStudents from "./components/TeacherStudents";
+import TeacherAssignments from "./components/TeacherAssignments";
+import TeacherSchedule from "./components/TeacherSchedule";
 
 // Mock Data & Models
 import {
@@ -42,7 +48,7 @@ import {
   INITIAL_EVENTS,
   getSeededEventsForMonth,
 } from "./data";
-import { Course, ActivityItem, Metrics, EventItem, ActiveTab } from "./types";
+import { Course, ActivityItem, Metrics, EventItem, ActiveTab, UserRole } from "./types";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("home");
@@ -50,6 +56,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [userRole, setUserRole] = useState<UserRole>("student");
 
   // Sidebar interactive states
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
@@ -344,6 +351,8 @@ export default function App() {
         homeSubTab={homeSubTab}
         setHomeSubTab={setHomeSubTab}
         triggerCalendarFocus={triggerCalendarFocus}
+        userRole={userRole}
+        setUserRole={setUserRole}
       />
 
       {/* Top Navigation Bar */}
@@ -482,7 +491,7 @@ export default function App() {
       >
         {/* Navigation router of our tabs */}
         <AnimatePresence mode="wait">
-          {activeTab === "home" && (
+          {activeTab === "home" && userRole === "student" && (
             <motion.div
               key="home"
               initial={{ opacity: 0, y: 15 }}
@@ -738,7 +747,19 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === "my-courses" && (
+          {activeTab === "home" && userRole === "teacher" && (
+            <motion.div
+              key="teacher-home"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+            >
+              <TeacherHome />
+            </motion.div>
+          )}
+
+          {activeTab === "my-courses" && userRole === "student" && (
             <motion.div
               key="my-courses"
               initial={{ opacity: 0, y: 15 }}
@@ -763,7 +784,19 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === "schedule" && (
+          {activeTab === "my-courses" && userRole === "teacher" && (
+            <motion.div
+              key="teacher-my-classes"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TeacherMyClasses />
+            </motion.div>
+          )}
+
+          {activeTab === "schedule" && userRole === "student" && (
             <motion.div
               key="schedule"
               initial={{ opacity: 0, y: 15 }}
@@ -775,7 +808,19 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === "assignments" && (
+          {activeTab === "schedule" && userRole === "teacher" && (
+            <motion.div
+              key="teacher-schedule"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TeacherSchedule />
+            </motion.div>
+          )}
+
+          {activeTab === "assignments" && userRole === "student" && (
             <motion.div
               key="assignments"
               initial={{ opacity: 0, y: 15 }}
@@ -784,6 +829,30 @@ export default function App() {
               transition={{ duration: 0.2 }}
             >
               <AssignmentsView />
+            </motion.div>
+          )}
+
+          {activeTab === "assignments" && userRole === "teacher" && (
+            <motion.div
+              key="teacher-assignments"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TeacherAssignments />
+            </motion.div>
+          )}
+
+          {activeTab === "students" && userRole === "teacher" && (
+            <motion.div
+              key="teacher-students"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TeacherStudents />
             </motion.div>
           )}
 
@@ -850,24 +919,8 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.2 }}
-              className="bg-zinc-900 rounded-2xl p-6 shadow-2xl max-w-xl text-left space-y-4"
             >
-              <h3 className="font-extrabold text-base text-zinc-100">
-                Skillzone Curriculum & System Scope
-              </h3>
-              <p className="text-xs text-zinc-400 leading-relaxed font-normal">
-                Skillzone is an enterprise-grade curriculum platform tailored to
-                fast-track modern execution. Built around the Manrope design
-                language to maximize telemetry scanning, it incorporates fully
-                modular course logs, active discussion boxes, SQL sandboxes and
-                predictive forecast matrices.
-              </p>
-              <div className="p-4 bg-zinc-950 rounded-xl text-[11px] font-mono text-accent leading-relaxed space-y-1">
-                <p>Platform: React SPA with Vite & Tailwind CSS</p>
-                <p>Telemetry: Structured telemetry databases</p>
-                <p>Compiler: TypeScript strictly typed ESNext</p>
-                <p>Design Token Version: 1.0.4 - Premium</p>
-              </div>
+              <InfoView />
             </motion.div>
           )}
         </AnimatePresence>

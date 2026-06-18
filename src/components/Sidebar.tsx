@@ -13,8 +13,11 @@ import {
   ChevronUp,
   PanelLeftClose,
   PanelLeftOpen,
+  Users,
+  Library,
+  FileBarChart,
 } from "lucide-react";
-import { ActiveTab } from "../types";
+import { ActiveTab, UserRole } from "../types";
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -25,6 +28,8 @@ interface SidebarProps {
   homeSubTab: "overview" | "live-network" | "todo";
   setHomeSubTab: (sub: "overview" | "live-network" | "todo") => void;
   triggerCalendarFocus: () => void;
+  userRole: UserRole;
+  setUserRole: (role: UserRole) => void;
 }
 
 export default function Sidebar({
@@ -35,6 +40,8 @@ export default function Sidebar({
   homeSubTab,
   setHomeSubTab,
   triggerCalendarFocus,
+  userRole,
+  setUserRole,
 }: SidebarProps) {
   const [homeExpanded, setHomeExpanded] = useState(true);
 
@@ -80,6 +87,59 @@ export default function Sidebar({
             )}
           </div>
         </div>
+
+        {/* Role Switcher */}
+        {!sidebarCollapsed && (
+          <div className="px-3 mb-6">
+            <div className="bg-zinc-900 rounded-xl p-1 flex relative">
+              <div
+                className={`absolute top-1 bottom-1 rounded-lg bg-accent-dark transition-all duration-300 ease-out shadow-lg shadow-accent-dark/20 ${
+                  userRole === "student" ? "left-1 w-[calc(50%-4px)]" : "left-[calc(50%+2px)] w-[calc(50%-4px)]"
+                }`}
+              />
+              <button
+                onClick={() => setUserRole("student")}
+                className={`flex-1 relative z-10 py-2 text-[11px] font-bold rounded-lg transition-colors duration-200 cursor-pointer ${
+                  userRole === "student" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Student
+              </button>
+              <button
+                onClick={() => setUserRole("teacher")}
+                className={`flex-1 relative z-10 py-2 text-[11px] font-bold rounded-lg transition-colors duration-200 cursor-pointer ${
+                  userRole === "teacher" ? "text-white" : "text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                Teacher
+              </button>
+            </div>
+          </div>
+        )}
+
+        {sidebarCollapsed && (
+          <div className="mb-4 flex justify-center">
+            <button
+              onClick={() => setUserRole(userRole === "student" ? "teacher" : "student")}
+              className="w-11 h-11 flex items-center justify-center rounded-xl bg-zinc-900 text-accent hover:bg-accent-dark/15 transition-all cursor-pointer"
+              title={userRole === "student" ? "Switch to Teacher" : "Switch to Student"}
+            >
+              {userRole === "student" ? (
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* Main Navigation links */}
         <nav className="space-y-5">
@@ -170,7 +230,7 @@ export default function Sidebar({
                 )}
               </li>
 
-              {/* My Courses */}
+              {/* My Courses / My Classes */}
               <li>
                 {sidebarCollapsed ? (
                   <button
@@ -180,7 +240,7 @@ export default function Sidebar({
                         ? "bg-accent-dark/15 text-accent"
                         : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
                     }`}
-                    title="My Courses"
+                    title={userRole === "teacher" ? "My Classes" : "My Courses"}
                   >
                     <BookOpen className="w-5 h-5 stroke-[1.8px]" />
                   </button>
@@ -195,7 +255,7 @@ export default function Sidebar({
                   >
                     <div className="flex items-center gap-3">
                       <BookOpen className="w-4 h-4 stroke-[1.8px]" />
-                      <span>My Courses</span>
+                      <span>{userRole === "teacher" ? "My Classes" : "My Courses"}</span>
                     </div>
                   </button>
                 )}
@@ -263,36 +323,71 @@ export default function Sidebar({
                 )}
               </li>
 
-              {/* Progress */}
-              <li>
-                {sidebarCollapsed ? (
-                  <button
-                    onClick={() => handleNavClick("progress")}
-                    className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
-                      activeTab === "progress"
-                        ? "bg-accent-dark/15 text-accent"
-                        : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                    }`}
-                    title="Progress"
-                  >
-                    <LineChart className="w-5 h-5 stroke-[1.8px]" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleNavClick("progress")}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
-                      activeTab === "progress"
-                        ? "bg-accent-dark/15 text-accent"
-                        : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <LineChart className="w-4 h-4 stroke-[1.8px]" />
-                      <span>Progress</span>
-                    </div>
-                  </button>
-                )}
-              </li>
+              {/* Students (teacher only) */}
+              {userRole === "teacher" && (
+                <li>
+                  {sidebarCollapsed ? (
+                    <button
+                      onClick={() => handleNavClick("students")}
+                      className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
+                        activeTab === "students"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                      title="Students"
+                    >
+                      <Users className="w-5 h-5 stroke-[1.8px]" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleNavClick("students")}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        activeTab === "students"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Users className="w-4 h-4 stroke-[1.8px]" />
+                        <span>Students</span>
+                      </div>
+                    </button>
+                  )}
+                </li>
+              )}
+
+              {/* Progress (student only) */}
+              {userRole === "student" && (
+                <li>
+                  {sidebarCollapsed ? (
+                    <button
+                      onClick={() => handleNavClick("progress")}
+                      className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
+                        activeTab === "progress"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                      title="Progress"
+                    >
+                      <LineChart className="w-5 h-5 stroke-[1.8px]" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleNavClick("progress")}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        activeTab === "progress"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <LineChart className="w-4 h-4 stroke-[1.8px]" />
+                        <span>Progress</span>
+                      </div>
+                    </button>
+                  )}
+                </li>
+              )}
 
               {/* Messages */}
               <li>
@@ -330,38 +425,91 @@ export default function Sidebar({
           <div className="pt-2">
             {!sidebarCollapsed && (
               <span className="px-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-2 font-mono select-none">
-                More
+                {userRole === "teacher" ? "Resources" : "More"}
               </span>
             )}
             <ul className="space-y-1">
-              {/* Discover */}
-              <li>
-                {sidebarCollapsed ? (
-                  <button
-                    onClick={() => handleNavClick("discover")}
-                    className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
-                      activeTab === "discover"
-                        ? "bg-accent-dark/15 text-accent"
-                        : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                    }`}
-                    title="Discover"
-                  >
-                    <Compass className="w-5 h-5 stroke-[1.8px]" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleNavClick("discover")}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
-                      activeTab === "discover"
-                        ? "bg-accent-dark/15 text-accent"
-                        : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
-                    }`}
-                  >
-                    <Compass className="w-4 h-4 stroke-[1.8px]" />
-                    <span>Discover</span>
-                  </button>
-                )}
-              </li>
+              {/* Discover (student only) */}
+              {userRole === "student" && (
+                <li>
+                  {sidebarCollapsed ? (
+                    <button
+                      onClick={() => handleNavClick("discover")}
+                      className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
+                        activeTab === "discover"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                      title="Discover"
+                    >
+                      <Compass className="w-5 h-5 stroke-[1.8px]" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleNavClick("discover")}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        activeTab === "discover"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                    >
+                      <Compass className="w-4 h-4 stroke-[1.8px]" />
+                      <span>Discover</span>
+                    </button>
+                  )}
+                </li>
+              )}
+
+              {/* Teacher Resources */}
+              {userRole === "teacher" && (
+                <>
+                  <li>
+                    {sidebarCollapsed ? (
+                      <button
+                        className="w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                        title="Gradebook"
+                      >
+                        <ClipboardList className="w-5 h-5 stroke-[1.8px]" />
+                      </button>
+                    ) : (
+                      <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100">
+                        <ClipboardList className="w-4 h-4 stroke-[1.8px]" />
+                        <span>Gradebook</span>
+                      </button>
+                    )}
+                  </li>
+                  <li>
+                    {sidebarCollapsed ? (
+                      <button
+                        className="w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                        title="Course Materials"
+                      >
+                        <Library className="w-5 h-5 stroke-[1.8px]" />
+                      </button>
+                    ) : (
+                      <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100">
+                        <Library className="w-4 h-4 stroke-[1.8px]" />
+                        <span>Course Materials</span>
+                      </button>
+                    )}
+                  </li>
+                  <li>
+                    {sidebarCollapsed ? (
+                      <button
+                        className="w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                        title="Reports"
+                      >
+                        <FileBarChart className="w-5 h-5 stroke-[1.8px]" />
+                      </button>
+                    ) : (
+                      <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100">
+                        <FileBarChart className="w-4 h-4 stroke-[1.8px]" />
+                        <span>Reports</span>
+                      </button>
+                    )}
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </nav>
