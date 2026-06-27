@@ -1,5 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { GoogleGenAI, Modality } from '@google/genai';
 
 // Kept in sync with LIVE_MODEL in src/lib/liveConfig.ts. Inlined (not imported)
 // because a Vercel serverless function cannot import a .ts file from outside the
@@ -16,17 +15,21 @@ const LIVE_MODEL = 'gemini-2.5-flash-native-audio-preview-12-2025';
 // Requires the GEMINI_API_KEY environment variable to be set in the Vercel
 // project settings (Settings → Environment Variables), enabled for the
 // environment you are testing (Production and/or Preview).
+//
+// Everything risky (the SDK import + network call) runs inside the try/catch so a
+// failure surfaces as readable JSON instead of an opaque FUNCTION_INVOCATION_FAILED.
 export default async function handler(_req: IncomingMessage, res: ServerResponse) {
   res.setHeader('Content-Type', 'application/json');
 
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
-  if (!apiKey) {
-    res.statusCode = 500;
-    res.end(JSON.stringify({ error: 'GEMINI_API_KEY is not set in the Vercel environment' }));
-    return;
-  }
-
   try {
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
+    if (!apiKey) {
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: 'GEMINI_API_KEY is not set in the Vercel environment' }));
+      return;
+    }
+
+    const { GoogleGenAI, Modality } = await import('@google/genai');
     const ai = new GoogleGenAI({ apiKey, httpOptions: { apiVersion: 'v1alpha' } });
     const now = Date.now();
     const token = await ai.authTokens.create({
@@ -44,8 +47,9 @@ export default async function handler(_req: IncomingMessage, res: ServerResponse
     res.statusCode = 200;
     res.end(JSON.stringify({ token: token.name }));
   } catch (err) {
-    console.error('[live-token]', (err as Error).message);
+    const e = err as Error;
+    console.error('[live-token]', e?.message, e?.stack);
     res.statusCode = 502;
-    res.end(JSON.stringify({ error: 'Failed to mint ephemeral token' }));
+    res.end(JSON.stringify({ error: 'Failed to mint ephemeral token', detail: e?.message }));
   }
 }
