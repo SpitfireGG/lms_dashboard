@@ -1,6 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { GoogleGenAI, Modality } from '@google/genai';
-import { LIVE_MODEL } from '../src/lib/liveConfig';
+
+// Kept in sync with LIVE_MODEL in src/lib/liveConfig.ts. Inlined (not imported)
+// because a Vercel serverless function cannot import a .ts file from outside the
+// /api directory at runtime — doing so crashes the function on load.
+const LIVE_MODEL = 'gemini-2.5-flash-native-audio-preview-12-2025';
 
 // Vercel serverless function: GET /api/live-token
 //
