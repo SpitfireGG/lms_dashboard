@@ -16,6 +16,7 @@ import {
   Users,
   Library,
   FileBarChart,
+  Mic,
 } from "lucide-react";
 import { ActiveTab, UserRole } from "../types";
 
@@ -455,6 +456,37 @@ export default function Sidebar({
                     >
                       <Compass className="w-4 h-4 stroke-[1.8px]" />
                       <span>Discover</span>
+                    </button>
+                  )}
+                </li>
+              )}
+
+              {/* Mock Test (student only) */}
+              {userRole === "student" && (
+                <li>
+                  {sidebarCollapsed ? (
+                    <button
+                      onClick={() => handleNavClick("mock-test")}
+                      className={`w-11 h-11 mx-auto flex items-center justify-center rounded-xl transition-all cursor-pointer ${
+                        activeTab === "mock-test"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                      title="Mock Test"
+                    >
+                      <Mic className="w-5 h-5 stroke-[1.8px]" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleNavClick("mock-test")}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                        activeTab === "mock-test"
+                          ? "bg-accent-dark/15 text-accent"
+                          : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"
+                      }`}
+                    >
+                      <Mic className="w-4 h-4 stroke-[1.8px]" />
+                      <span>Mock Test</span>
                     </button>
                   )}
                 </li>
