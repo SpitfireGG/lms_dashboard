@@ -39,6 +39,7 @@ import TeacherMyClasses from "./components/TeacherMyClasses";
 import TeacherStudents from "./components/TeacherStudents";
 import TeacherAssignments from "./components/TeacherAssignments";
 import TeacherSchedule from "./components/TeacherSchedule";
+import MockTestView from "./components/MockTestView";
 
 // Mock Data & Models
 import {
@@ -865,6 +866,18 @@ export default function App() {
               transition={{ duration: 0.2 }}
             >
               <ProgressView />
+            </motion.div>
+          )}
+
+          {activeTab === "mock-test" && (
+            <motion.div
+              key="mock-test"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MockTestView />
             </motion.div>
           )}
 
