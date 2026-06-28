@@ -4,6 +4,7 @@ import {
   LIVE_MODEL,
   LIVE_VOICE,
   buildSystemInstruction,
+  type TestSource,
 } from '../lib/liveConfig';
 import { MicCapture, PlaybackQueue, playBuzzer } from '../lib/audio';
 
@@ -25,7 +26,7 @@ const STATUS_LABEL: Record<SessionStatus, string> = {
   idle: 'Ready',
   connecting: 'Connecting…',
   'ai-speaking': 'Examiner speaking',
-  'your-turn': 'Your turn — interpret now',
+  'your-turn': 'Your turn — answer now',
   listening: 'Listening…',
   ended: 'Session ended',
   error: 'Something went wrong',
@@ -64,7 +65,7 @@ export function useLiveInterpreterSession() {
     setStatus((s) => (s === 'error' ? s : 'ended'));
   }, []);
 
-  const start = useCallback(async () => {
+  const start = useCallback(async (source: TestSource) => {
     setError(null);
     setTranscript([]);
     setStatus('connecting');
@@ -94,7 +95,7 @@ export function useLiveInterpreterSession() {
         model: LIVE_MODEL,
         config: {
           responseModalities: [Modality.AUDIO],
-          systemInstruction: buildSystemInstruction(),
+          systemInstruction: buildSystemInstruction(source),
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: LIVE_VOICE } } },
           inputAudioTranscription: {},
           outputAudioTranscription: {},
